@@ -34,6 +34,14 @@ const BeersList = ({ beers, buttonClicked, setButtonClicked }) => {
   ));
 };
 
+const handleButtonClick = (buttonClicked, setButtonClicked) => {
+  if (buttonClicked == true) {
+    setButtonClicked(false);
+  } else {
+    setButtonClicked(true);
+  }
+};
+
 const Beer = ({ beer, buttonClicked, setButtonClicked }) => {
   return (
     <>
@@ -50,7 +58,8 @@ const Beer = ({ beer, buttonClicked, setButtonClicked }) => {
           {beer.tagline}
           <button
             onClick={() => {
-              setButtonClicked(true);
+              handleButtonClick(buttonClicked, setButtonClicked);
+              //setButtonClicked(true);
             }}
           >
             {buttonClicked == false ? "Show Description:" : "Hide Description"}
