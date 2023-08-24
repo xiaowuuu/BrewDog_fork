@@ -10,28 +10,10 @@ const BeerContainer = () => {
             .then((data) => setBeers(data));
     }, []);
 
-    // let BeersList;
-    // if (beers.length != 0) {
-    //     BeersList = ({ beers }) => {
-    //         return beers.map((beer) => (beer.name));
-    //     };
-    //     console.log(beers);
-    // }
-    //console.log(beers);
-
     return (
         <>
-            {beers.length == 0 ? (
-                <h1>Loading</h1>
-            ) : (
-                <>
-                    <h1>BrewDog Beers</h1>
-
-                    <BeersList beers={beers} />
-
-
-                </>
-            )}
+        <h1>BrewDog Beers</h1>
+        <BeersList beers={beers} />
         </>
     );
 };
@@ -43,11 +25,17 @@ const BeersList = ({ beers}) => {
 const Beer = ({beer}) => {
     return (
         <>
-        {beer.name}
-        {beer.abv}
-        {beer.tagline}
-        {beer.description}
-
+            <ul type="none">
+                <li>
+                    <img src={beer.image_url} alt={beer.name} style={{ width: 100, height: 300 }}/>
+                    <br />
+                    {beer.name}
+                    <hr />
+                    {beer.abv}
+                    {beer.tagline}
+                    {beer.description}
+                    </li>
+            </ul>
         </>
     )
 }
