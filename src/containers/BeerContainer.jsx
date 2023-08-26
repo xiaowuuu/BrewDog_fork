@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useState } from "react";
 
 const BeerContainer = () => {
   const [beers, setBeers] = useState([]);
+  const [favBeers, setFavBeers] = useState([]);
   
   useEffect(() => {
     fetch("https://api.punkapi.com/v2/beers")
@@ -11,95 +11,78 @@ const BeerContainer = () => {
       .then((data) => setBeers(data));
   }, []);
 
+  const handleFavClick = (beer) => {
+    if (favBeers.some((favBeer) => favBeer.id === beer.id)) {
+      setFavBeers(favBeers.filter((favBeer) => favBeer.id !== beer.id));
+    } else {
+      setFavBeers([...favBeers, beer]);
+    }
+  };
+
   return (
-    <>
+    <div>
       <h1>BrewDog Beers</h1>
-      <BeersList beers={beers} />
-    </>
+      <div className="beers-container">
+        <BeersList beers={beers} handleFavClick={handleFavClick} favBeers={favBeers} />
+        <div className="fav-beers">
+          <h2>My favorite beers</h2>
+          <ul>
+            {favBeers.map((favBeer) => (
+              <li key={favBeer.id}>{favBeer.name}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
-const BeersList = ({ beers }) => {
-  return beers.map((beer, index) => (
-    <Beer
-      key={index}
-      beer={beer}
-    />
-  ));
+
+const BeersList = ({ beers, handleFavClick, favBeers }) => {
+  return (
+    <div className="beers-list">
+      {beers.map((beer) => (
+        <Beer key={beer.id} beer={beer} handleFavClick={handleFavClick} favBeers={favBeers} />
+      ))}
+    </div>
+  );
 };
 
-
-const Beer = ({ beer }) => {
-  const [buttonClicked, setButtonClicked] = useState(false);
-  const [favBeers, setFavBeers] = useState([]);
+const Beer = ({ beer, handleFavClick, favBeers }) => {
   const [favButton, setFavButton] = useState(false);
 
-    // favorite button
-    const handleFavClick = () => {
-      if (favBeers.some((favBeer) => favBeer.id === beer.id)) {
-        setFavBeers(favBeers.filter((favBeer)=> favBeer.id !== beer.id));
-      } else {
-        setFavBeers([...favBeers, beer]);
-      }
-      setFavButton(!favButton);
-    }
+  useEffect(() => {
+    setFavButton(favBeers.some((favBeer) => favBeer.id === beer.id));
+  }, [favBeers, beer.id]);
+
+  const handleButtonClick = (buttonClicked, setButtonClicked) => {
+    setButtonClicked(!buttonClicked);
+  };
+  const [buttonClicked, setButtonClicked] = useState(false);
+  
   return (
-    <>
+    <div className="beer-item">
       <ul type="none">
         <li>
-          <img
-            src={beer.image_url}
-            alt={beer.name}
-            style={{ width: 100, height: 300 }}
-          /></li>
-          <br />
-          <li key={beer.id}>{beer.name}</li>
-          <li>{beer.tagline}</li>
-          <button 
-          onClick={()=>{
-            handleFavClick(favButton,setFavButton)
-          }}
-          >
-              {favButton ? "Dislike" : "I like it" }
-            </button>
-          <button
-            onClick={() => {
-              handleButtonClick(buttonClicked, setButtonClicked);
-            }}
-          >
-            {buttonClicked == false ? "Show Description:" : "Hide Description"}
-          </button>
+          <img src={beer.image_url} alt={beer.name} style={{ width: 100, height: 300 }} />
+        </li>
+        <br />
+        <li key={beer.id}>{beer.name}</li>
+        <button onClick={() => handleFavClick(beer)}>
+          {favButton ? "Dislike" : "I like it"}
+        </button>
+        <li>{beer.tagline}</li>
+        <button onClick={() => handleButtonClick(buttonClicked, setButtonClicked)}>
+          {buttonClicked == false ? "Show Description:" : "Hide Description"}
+        </button>
           {buttonClicked == true && (
             <div>
               <li>Description: {beer.description}</li>
               <li>abv: {beer.abv}</li>
             </div>
           )}
-          <hr />
-      </ul>
-      {/* display the liked beers */}
-      <div>
-        <h2>My favorite beer</h2>
-        <ul>
-          {favBeers.map((beer)=> (
-            <li key={beer.id}>{beer.name}</li>
-          ))}
         </ul>
-      </div>
-    </>
+    </div>
   );
 };
-
-
-//more info button
-const handleButtonClick = (buttonClicked, setButtonClicked) => {
-  if (buttonClicked == true) {
-    setButtonClicked(false);
-  } else {
-    setButtonClicked(true);
-  }
-
-
-};
-
 
 export default BeerContainer;
