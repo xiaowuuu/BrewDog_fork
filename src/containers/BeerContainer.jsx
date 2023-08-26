@@ -4,7 +4,6 @@ import { useState } from "react";
 
 const BeerContainer = () => {
   const [beers, setBeers] = useState([]);
-  const [buttonClicked, setButtonClicked] = useState(false);
 
   useEffect(() => {
     fetch("https://api.punkapi.com/v2/beers")
@@ -15,34 +14,23 @@ const BeerContainer = () => {
   return (
     <>
       <h1>BrewDog Beers</h1>
-      <BeersList
-        beers={beers}
-        buttonClicked={buttonClicked}
-        setButtonClicked={setButtonClicked}
-      />
+      <BeersList beers={beers} />
     </>
   );
 };
-const BeersList = ({ beers, buttonClicked, setButtonClicked }) => {
+const BeersList = ({ beers }) => {
   return beers.map((beer, index) => (
     <Beer
       key={index}
       beer={beer}
-      buttonClicked={buttonClicked}
-      setButtonClicked={setButtonClicked}
     />
   ));
 };
 
-const handleButtonClick = (buttonClicked, setButtonClicked) => {
-  if (buttonClicked == true) {
-    setButtonClicked(false);
-  } else {
-    setButtonClicked(true);
-  }
-};
 
-const Beer = ({ beer, buttonClicked, setButtonClicked }) => {
+const Beer = ({ beer }) => {
+  const [buttonClicked, setButtonClicked] = useState(false);
+
   return (
     <>
       <ul type="none">
@@ -51,29 +39,35 @@ const Beer = ({ beer, buttonClicked, setButtonClicked }) => {
             src={beer.image_url}
             alt={beer.name}
             style={{ width: 100, height: 300 }}
-          />
+          /></li>
           <br />
-          {beer.name}
-          <hr />
-          {beer.tagline}
+          <li>{beer.name}</li>
+          <li>{beer.tagline}</li>
           <button
             onClick={() => {
               handleButtonClick(buttonClicked, setButtonClicked);
-              //setButtonClicked(true);
             }}
           >
             {buttonClicked == false ? "Show Description:" : "Hide Description"}
           </button>
           {buttonClicked == true && (
             <div>
-              {beer.description}
-              {beer.abv}
+              <li>Description: {beer.description}</li>
+              <li>abv: {beer.abv}</li>
             </div>
           )}
-        </li>
+          <hr />
       </ul>
     </>
   );
+};
+
+const handleButtonClick = (buttonClicked, setButtonClicked) => {
+  if (buttonClicked == true) {
+    setButtonClicked(false);
+  } else {
+    setButtonClicked(true);
+  }
 };
 
 export default BeerContainer;
