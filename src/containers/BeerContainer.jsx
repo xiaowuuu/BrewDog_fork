@@ -1,10 +1,9 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const BeerContainer = () => {
   const [beers, setBeers] = useState([]);
   const [favBeers, setFavBeers] = useState([]);
-  
+
   useEffect(() => {
     fetch("https://api.punkapi.com/v2/beers")
       .then((res) => res.json())
@@ -24,15 +23,16 @@ const BeerContainer = () => {
       <h1>BrewDog Beers</h1>
       <div className="beers-container">
         <BeersList beers={beers} handleFavClick={handleFavClick} favBeers={favBeers} />
-        <div className="fav-beers">
-          <h2>My favorite beers</h2>
-          <ul>
-            {favBeers.map((favBeer) => (
-              <li key={favBeer.id}>{favBeer.name}</li>
-            ))}
-          </ul>
-        </div>
       </div>
+      <div className="fav-beers">
+        <h2>My favorite beers</h2>
+        <ul>
+          {favBeers.map((favBeer) => (
+            <li key={favBeer.id}>{favBeer.name}</li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   );
 };
@@ -58,7 +58,7 @@ const Beer = ({ beer, handleFavClick, favBeers }) => {
     setButtonClicked(!buttonClicked);
   };
   const [buttonClicked, setButtonClicked] = useState(false);
-  
+
   return (
     <div className="beer-item">
       <ul type="none">
@@ -67,20 +67,20 @@ const Beer = ({ beer, handleFavClick, favBeers }) => {
         </li>
         <br />
         <li key={beer.id}>{beer.name}</li>
-        <button onClick={() => handleFavClick(beer)}>
+        <button className="fav-button" onClick={() => handleFavClick(beer)}>
           {favButton ? "Dislike" : "I like it"}
         </button>
         <li>{beer.tagline}</li>
         <button onClick={() => handleButtonClick(buttonClicked, setButtonClicked)}>
           {buttonClicked == false ? "Show Description:" : "Hide Description"}
         </button>
-          {buttonClicked == true && (
-            <div>
-              <li>Description: {beer.description}</li>
-              <li>abv: {beer.abv}</li>
-            </div>
-          )}
-        </ul>
+        {buttonClicked == true && (
+          <div>
+            <li>Description: {beer.description}</li>
+            <li>abv: {beer.abv}</li>
+          </div>
+        )}
+      </ul>
     </div>
   );
 };
